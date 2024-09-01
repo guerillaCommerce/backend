@@ -1,12 +1,11 @@
 package com.github.commerce.entity;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.time.Instant;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter

@@ -12,8 +12,8 @@ import com.github.commerce.web.dto.payment.ChargeDto;
 import com.github.commerce.web.dto.payment.ChargeHistoryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor

@@ -1,8 +1,5 @@
 package com.github.commerce.service.product;
 
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.github.commerce.entity.Product;
-import com.github.commerce.entity.ProductContentImage;
 import com.github.commerce.repository.product.ProductContentImageRepository;
 import com.github.commerce.service.product.exception.ProductErrorCode;
 import com.github.commerce.service.product.exception.ProductException;
@@ -10,7 +7,6 @@ import com.github.commerce.service.product.util.FilePath;
 import com.github.commerce.service.review.exception.ReviewErrorCode;
 import com.github.commerce.service.review.exception.ReviewException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class ProductImageUploadService {
@@ -70,17 +67,17 @@ public class ProductImageUploadService {
             }
         });
         return urlList;
-}
+    }
 
     public String uploadImageFile(MultipartFile multipartFile) {
 
-            String fileName = createFileName(multipartFile.getOriginalFilename());
-            try {
-                return awsS3Service.memoryUpload(multipartFile, fileName);
+        String fileName = createFileName(multipartFile.getOriginalFilename());
+        try {
+            return awsS3Service.memoryUpload(multipartFile, fileName);
 
-            } catch (IOException e) {
-                throw new ProductException(ProductErrorCode.FAIL_TO_SAVE);
-            }
+        } catch (IOException e) {
+            throw new ProductException(ProductErrorCode.FAIL_TO_SAVE);
+        }
     }
 
     public String createFileName(String fileName) {
@@ -98,7 +95,6 @@ public class ProductImageUploadService {
             throw new ProductException(ProductErrorCode.INVALID_FORMAT_FILE);
         }
     }
-
 
 
 }

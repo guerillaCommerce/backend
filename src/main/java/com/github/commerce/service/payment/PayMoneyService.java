@@ -6,8 +6,8 @@ import com.github.commerce.web.dto.payment.GetPayMoneyDto;
 import com.github.commerce.web.dto.payment.PayMoneyDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,8 +46,6 @@ public class PayMoneyService {
 
         return responseList;
     }
-
-
 
 
 }

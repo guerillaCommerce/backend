@@ -1,16 +1,12 @@
 package com.github.commerce.entity;
 
 import com.github.commerce.web.dto.product.GetProductDto;
-import com.github.commerce.web.dto.product.ProductRequest;
-import com.google.gson.Gson;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -76,7 +72,7 @@ public class Product {
 
     @NotNull
     @Column(name = "is_deleted", nullable = false, columnDefinition = "tinyint default 0")
-    private Boolean isDeleted ;
+    private Boolean isDeleted;
 
     @Column(name = "product_category", length = 20)
     private String productCategory;

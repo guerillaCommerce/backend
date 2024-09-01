@@ -3,12 +3,12 @@ package com.github.commerce.entity;
 import com.github.commerce.service.coupon.exception.CouponErrorCode;
 import com.github.commerce.service.coupon.exception.CouponException;
 import com.github.commerce.web.dto.coupon.CouponRegisterRequest;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @ToString

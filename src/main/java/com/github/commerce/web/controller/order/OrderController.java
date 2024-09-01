@@ -2,11 +2,9 @@ package com.github.commerce.web.controller.order;
 
 import com.github.commerce.repository.user.UserDetailsImpl;
 import com.github.commerce.service.order.OrderService;
-import com.github.commerce.web.dto.order.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import com.github.commerce.web.dto.order.GetOrderDto;
+import com.github.commerce.web.dto.order.OrderDto;
+import com.github.commerce.web.dto.order.PostOrderDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +15,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-@Api(tags = "물품주문 API")
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/v1/api/order")
@@ -30,11 +27,6 @@ public class  OrderController {
      * @param
      * @return
      */
-    @ApiOperation(value = "상품상세페이지로부터 주문 등록, 로그인필요")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = String.class),
-            @ApiResponse(code = 400, message = "Bad Request")
-    })
     @PostMapping
     public ResponseEntity<List<String>> createOrder(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -49,11 +41,6 @@ public class  OrderController {
      * @param
      * @return
      */
-    @ApiOperation(value = "장바구니로부터 주문 등록, 로그인필요")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = String.class),
-            @ApiResponse(code = 400, message = "Bad Request")
-    })
     @PostMapping("/cart")
     public ResponseEntity<List<String>> createOrderFromCart(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -69,11 +56,6 @@ public class  OrderController {
      * @param cursorId
      * @return
      */
-    @ApiOperation(value = "사용자 주문내역 조회, 로그인필요, cursorId는 없어도 됩니다.")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = List.class),
-            @ApiResponse(code = 400, message = "Bad Request")
-    })
     @GetMapping
     public ResponseEntity<List<OrderDto>> getOrderList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -138,11 +120,6 @@ public class  OrderController {
 //
 //    }
 
-    @ApiOperation(value = "구매자의 구매내역 조회, 로그인필요")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = List.class),
-            @ApiResponse(code = 400, message = "Bad Request")
-    })
     @GetMapping("/user")
     public ResponseEntity<List<Map<LocalDate, List<OrderDto>>>> getPurchasedOrder(
             @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -151,11 +128,6 @@ public class  OrderController {
         return ResponseEntity.ok(orderService.getPurchasedOrderList(userId));
     }
 
-    @ApiOperation(value = "판매자의 판매내역 조회, 로그인필요")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = List.class),
-            @ApiResponse(code = 400, message = "Bad Request")
-    })
     @GetMapping("/seller")
     public ResponseEntity<List<Map<LocalDate, List<OrderDto>>>> getSellerOrder(
             @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -205,11 +177,6 @@ public class  OrderController {
      * @param orderId
      * @return
      */
-    @ApiOperation(value = "개별주문 삭제, 로그인필요")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = String.class),
-            @ApiResponse(code = 400, message = "Bad Request")
-    })
     @DeleteMapping("/{orderId}")
     public ResponseEntity<String> deleteOne(
             @AuthenticationPrincipal UserDetailsImpl userDetails,

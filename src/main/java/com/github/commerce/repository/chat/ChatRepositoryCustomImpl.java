@@ -1,22 +1,21 @@
 package com.github.commerce.repository.chat;
 
 import com.github.commerce.entity.collection.Chat;
-import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.repository.query.FluentQuery;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.stereotype.Repository;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.repository.query.FluentQuery;
+import org.springframework.stereotype.Repository;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -30,7 +29,7 @@ public class ChatRepositoryCustomImpl implements ChatRepository {
 
     public List<Chat> getUserChatList(Long userId, Long sellerId) {
         Query query = new Query(Criteria.where("userId").is(userId).and("sellerId").is(sellerId));
-        query.fields().include("customRoomId", "userId", "productId","sellerId","shopName","userName", "chats");
+        query.fields().include("customRoomId", "userId", "productId", "sellerId", "shopName", "userName", "chats");
 
         return mongoTemplate.find(query, Chat.class);
 
@@ -38,7 +37,7 @@ public class ChatRepositoryCustomImpl implements ChatRepository {
 
     public List<Chat> getSellerChatList(Long sellerId, Long productId) {
         Query query = new Query(Criteria.where("sellerId").is(sellerId).and("productId").is(productId));
-        query.fields().include("customRoomId", "userId", "productId","sellerId","shopName","userName", "chats");
+        query.fields().include("customRoomId", "userId", "productId", "sellerId", "shopName", "userName", "chats");
 
         return mongoTemplate.find(query, Chat.class);
     }
@@ -92,7 +91,7 @@ public class ChatRepositoryCustomImpl implements ChatRepository {
     }
 
     @Override
-    public Iterable<Chat> findAllById(Iterable<ObjectId> objectIds) {
+    public List<Chat> findAllById(Iterable<ObjectId> objectIds) {
         return null;
     }
 

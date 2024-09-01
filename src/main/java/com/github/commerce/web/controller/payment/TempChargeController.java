@@ -2,13 +2,9 @@ package com.github.commerce.web.controller.payment;
 
 import com.github.commerce.repository.user.UserDetailsImpl;
 import com.github.commerce.service.payment.TempChargeService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 //@Api(tags = "임시 충전 API")
@@ -21,7 +17,7 @@ public class TempChargeController {
 
     private final TempChargeService tempChargeService;
 
-//    @ApiOperation(value = "기존 DB에서 직접 페이머니 입력하지 않은 계정만 가능| 100만 단위충전")
+    //    @ApiOperation(value = "기존 DB에서 직접 페이머니 입력하지 않은 계정만 가능| 100만 단위충전")
 //    @PostMapping("/temp-charge")
     public ResponseEntity<?> tempCharge(
             @AuthenticationPrincipal UserDetailsImpl userDetails

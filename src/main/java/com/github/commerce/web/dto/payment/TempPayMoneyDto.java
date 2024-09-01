@@ -1,7 +1,6 @@
 package com.github.commerce.web.dto.payment;
 
 import com.github.commerce.entity.PayMoney;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,10 +14,8 @@ import java.time.LocalDateTime;
 @Builder
 public class TempPayMoneyDto {
 
-    @ApiModelProperty(value = "잔액")
     private Long payMoneyBalance;
-
-    @ApiModelProperty(value = "거래 시간")
+    
     private LocalDateTime createAt;
 
 

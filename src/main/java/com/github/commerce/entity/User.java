@@ -1,17 +1,13 @@
 package com.github.commerce.entity;
 
-import com.github.commerce.service.payment.exception.PaymentErrorCode;
-import com.github.commerce.service.payment.exception.PaymentException;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -49,7 +45,7 @@ public class User {
     private UserRoleEnum role;
 
     @Column(name = "is_delete")
-    private Boolean isDelete=false;
+    private Boolean isDelete;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -66,10 +62,9 @@ public class User {
     @OneToOne(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
     private Seller seller;
 
-    public PayMoney getPayMoneyByUserId(){
+    public PayMoney getPayMoneyByUserId() {
         return payMoney.stream().max(Comparator.comparing(PayMoney::getId)).orElseGet(PayMoney::new);
     }
-
 
 
 }

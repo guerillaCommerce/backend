@@ -4,32 +4,32 @@ spring:
       matching-strategy: ant_path_matcher
 
   datasource:
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
     master:
       hikari:
-        maxLifetime: 500000
-        username: ${DB_USER}
-        password: ${DB_PASSWORD}
-        driver-class-name: com.mysql.cj.jdbc.Driver
+        connection-timeout: 30000 # 30초
+        max-lifetime: 1800000 # 30분
+        maximum-pool-size: 10
+        minimum-idle: 5
         jdbc-url: jdbc:mysql://${DB_HOST_MASTER}:3306/${DB_NAME}
-    slave:
+    slave1:
       hikari:
-        maxLifetime: 500000
-        username: ${DB_USER}
-        password: ${DB_PASSWORD}
-        driver-class-name: com.mysql.cj.jdbc.Driver
+        connection-timeout: 30000 # 30초
+        max-lifetime: 1800000 # 30분
+        maximum-pool-size: 10
+        minimum-idle: 5
         jdbc-url: jdbc:mysql://${DB_HOST_SLAVE1}:3306/${DB_NAME}
     slave2:
       hikari:
-        maxLifetime: 500000
-        username: ${DB_USER}
-        password: ${DB_PASSWORD}
-        driver-class-name: com.mysql.cj.jdbc.Driver
+        connection-timeout: 30000 # 30초
+        max-lifetime: 1800000 # 30분
+        maximum-pool-size: 10
+        minimum-idle: 5
         jdbc-url: jdbc:mysql://${DB_HOST_SLAVE2}:3306/${DB_NAME}
   jpa:
-# local
-#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-#    RDS
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
     show-sql: true
@@ -54,12 +54,6 @@ spring:
   batch:
     job:
       enabled: false
-    jdbc:
-      initialize-schema: ALWAYS
-
-springdoc:
-  swagger-ui:
-    path: /api-doc.html
 
 jwt:
   secret-key-source: ${SECRET_KEY_SOURCE}

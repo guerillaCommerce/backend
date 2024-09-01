@@ -1,13 +1,13 @@
 package com.github.commerce.web.dto.product;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
@@ -16,28 +16,28 @@ import java.util.List;
 @AllArgsConstructor
 public class UpdateProductRequest {
 
-        @NotBlank
-        @Size(max = 20)
-        private String name;
+    @NotBlank
+    @Size(max = 20)
+    private String name;
 
-        private String content;
+    private String content;
 
-        @NotNull
-        private Integer price;
+    @NotNull
+    private Integer price;
 
-        private Integer leftAmount;
+    private Integer leftAmount;
 
-        private String productCategory;
+    private String productCategory;
 
-        private String ageCategory;
+    private String ageCategory;
 
-        private String genderCategory;
+    private String genderCategory;
 
-        private List<String> options;
+    private List<String> options;
 
-        private String deleteThumbnailUrl;
+    private String deleteThumbnailUrl;
 
-        private List<String> deleteImageUrls;
+    private List<String> deleteImageUrls;
 
 
 }
