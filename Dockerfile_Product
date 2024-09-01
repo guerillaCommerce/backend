@@ -9,7 +9,7 @@ COPY . .
 WORKDIR /workspace/product_module
 
 # Gradle build with caching
-RUN ./gradlew clean build -x test
+RUN ../gradlew clean build -x test
 
 # Stage 2: Run the application
 FROM eclipse-temurin:21
