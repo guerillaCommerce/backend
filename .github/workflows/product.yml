@@ -2,7 +2,7 @@ name: guerilla_commerce
 
 on:
   push:
-    branches: [ "main/product" ]
+    branches: [ "main_product" ]
 
 jobs:
   build:
