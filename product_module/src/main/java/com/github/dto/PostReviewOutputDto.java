@@ -3,10 +3,12 @@ package com.github.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.domain.Review;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Builder
+@Getter
 public class PostReviewOutputDto {
     private long reviewId;
     private long productId;

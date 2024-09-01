@@ -1,9 +1,10 @@
 package com.github.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -33,7 +34,7 @@ public class Review {
     @Column(name = "author", length = 100)
     private String author;
 
-    @Column(name = "content", length = 200)
+    @Column(name = "content", length = 1000)
     private String content;
 
     @Column(name = "star_point", nullable = false, columnDefinition = "int default 0")
@@ -43,6 +44,7 @@ public class Review {
     @Column(name = "is_deleted", columnDefinition = "tinyint default 0")
     private Boolean isDeleted = false;
 
+    @Setter
     @Column(name = "image_url", length = 200)
     private String imageUrl;
 

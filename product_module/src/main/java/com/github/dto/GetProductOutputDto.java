@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.domain.Product;
 import com.github.repository.GetProductProjection;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Builder
+@Getter
 public class GetProductOutputDto {
     private long productId;
 
@@ -112,6 +114,9 @@ public class GetProductOutputDto {
 
     private static List<String> parseImageUrls(String imageUrlsJson) {
         ObjectMapper objectMapper = new ObjectMapper();
+        if (imageUrlsJson == null) {
+            return new ArrayList<>(); // null인 경우 빈 리스트 반환
+        }
         try {
             return objectMapper.readValue(imageUrlsJson, new TypeReference<List<String>>() {
             });

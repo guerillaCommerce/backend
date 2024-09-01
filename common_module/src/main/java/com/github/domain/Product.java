@@ -7,13 +7,17 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "product")
 public class Product {
@@ -31,13 +35,13 @@ public class Product {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "content", length = 255)
+    @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "thumbnail_url", length = 255)
     private String thumbnailUrl;
 
-    @Column(name = "image_urls", length = 255)
+    @Column(name = "image_urls", columnDefinition = "TEXT")
     private String imageUrls;
 
     @NotNull
@@ -70,11 +74,11 @@ public class Product {
     @Column(name = "age_category", length = 20)
     private AgeCategory ageCategory;
 
-    @Column(name = "options")
+    @Column(name = "options", columnDefinition = "TEXT")
     private String options;
 
     @DecimalMin("0.0")
     @DecimalMax("5.0")
-    @Column(name = "average_star_point", precision = 2, scale = 1)
+    @Column(name = "average_star_point", precision = 2)
     private Double averageStarPoint;
 }

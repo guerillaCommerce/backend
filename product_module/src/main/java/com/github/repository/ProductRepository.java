@@ -13,11 +13,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p.id AS productId, s.id AS sellerId, s.shopName AS shopName, " +
             "s.shopImageUrl AS shopImageUrl, " +
-            "p.name AS name, p.price AS price, p.createdAt AS createdAt, p.productCategory AS productCategory, " +
+            "p.content AS content, p.name AS name, p.price AS price, p.createdAt AS createdAt, p.productCategory AS productCategory, " +
             "p.ageCategory AS ageCategory, p.genderCategory AS genderCategory, p.leftAmount AS leftAmount, " +
             "p.thumbnailUrl AS thumbnailUrl, p.imageUrls AS imageUrls, p.averageStarPoint AS averageStarPoint " +
             "FROM Product p " +
-            "JOIN FETCH p.seller s " +
+            "JOIN p.seller s " +
             "WHERE (:productCategory IS NULL OR p.productCategory = :productCategory) " +
             "AND (:ageCategory IS NULL OR p.ageCategory = :ageCategory) " +
             "AND (:genderCategory IS NULL OR p.genderCategory = :genderCategory) " +
@@ -34,11 +34,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p.id AS productId, s.id AS sellerId, s.shopName AS shopName, " +
             "s.shopImageUrl AS shopImageUrl, " +
-            "p.name AS name, p.price AS price, p.createdAt AS createdAt, p.productCategory AS productCategory, " +
+            "p.content AS content, p.name AS name, p.price AS price, p.createdAt AS createdAt, p.productCategory AS productCategory, " +
             "p.ageCategory AS ageCategory, p.genderCategory AS genderCategory, p.leftAmount AS leftAmount, " +
             "p.thumbnailUrl AS thumbnailUrl, p.imageUrls AS imageUrls, p.averageStarPoint AS averageStarPoint " +
             "FROM Product p " +
-            "JOIN FETCH p.seller s " +
+            "JOIN p.seller s " +
             "WHERE (:productCategory IS NULL OR p.productCategory = :productCategory) " +
             "AND (:ageCategory IS NULL OR p.ageCategory = :ageCategory) " +
             "AND (:genderCategory IS NULL OR p.genderCategory = :genderCategory) " +
@@ -55,11 +55,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p.id AS productId, s.id AS sellerId, s.shopName AS shopName, " +
             "s.shopImageUrl AS shopImageUrl, " +
-            "p.name AS name, p.price AS price, p.createdAt AS createdAt, p.productCategory AS productCategory, " +
+            "p.content AS content, p.name AS name, p.price AS price, p.createdAt AS createdAt, p.productCategory AS productCategory, " +
             "p.ageCategory AS ageCategory, p.genderCategory AS genderCategory, p.leftAmount AS leftAmount, " +
             "p.thumbnailUrl AS thumbnailUrl, p.imageUrls AS imageUrls, p.averageStarPoint AS averageStarPoint " +
             "FROM Product p " +
-            "JOIN FETCH p.seller s " +
+            "JOIN p.seller s " +
             "WHERE (:productCategory IS NULL OR p.productCategory = :productCategory) " +
             "AND (:ageCategory IS NULL OR p.ageCategory = :ageCategory) " +
             "AND (:genderCategory IS NULL OR p.genderCategory = :genderCategory) " +
@@ -76,11 +76,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p.id AS productId, s.id AS sellerId, s.shopName AS shopName, " +
             "s.shopImageUrl AS shopImageUrl, " +
-            "p.name AS name, p.price AS price, p.createdAt AS createdAt, p.productCategory AS productCategory, " +
+            "p.content AS content, p.name AS name, p.price AS price, p.createdAt AS createdAt, p.productCategory AS productCategory, " +
             "p.ageCategory AS ageCategory, p.genderCategory AS genderCategory, p.leftAmount AS leftAmount, " +
             "p.thumbnailUrl AS thumbnailUrl, p.imageUrls AS imageUrls, p.averageStarPoint AS averageStarPoint " +
             "FROM Product p " +
-            "JOIN FETCH p.seller s " +
+            "JOIN p.seller s " +
             "WHERE (:productCategory IS NULL OR p.productCategory = :productCategory) " +
             "AND (:ageCategory IS NULL OR p.ageCategory = :ageCategory) " +
             "AND (:genderCategory IS NULL OR p.genderCategory = :genderCategory) " +
@@ -95,11 +95,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p.id AS productId, s.id AS sellerId, s.shopName AS shopName, " +
             "s.shopImageUrl AS shopImageUrl, " +
-            "p.name AS name, p.price AS price, p.createdAt AS createdAt, p.productCategory AS productCategory, " +
+            "p.content AS content, p.name AS name, p.price AS price, p.createdAt AS createdAt, p.productCategory AS productCategory, " +
             "p.ageCategory AS ageCategory, p.genderCategory AS genderCategory, p.leftAmount AS leftAmount, " +
             "p.thumbnailUrl AS thumbnailUrl, p.imageUrls AS imageUrls, p.averageStarPoint AS averageStarPoint " +
             "FROM Product p " +
-            "JOIN FETCH p.seller s " +
+            "JOIN p.seller s " +
             "WHERE (:productCategory IS NULL OR p.productCategory = :productCategory) " +
             "AND (:ageCategory IS NULL OR p.ageCategory = :ageCategory) " +
             "AND (:genderCategory IS NULL OR p.genderCategory = :genderCategory) " +
@@ -114,11 +114,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p.id AS productId, s.id AS sellerId, s.shopName AS shopName, " +
             "s.shopImageUrl AS shopImageUrl, " +
-            "p.name AS name, p.price AS price, p.createdAt AS createdAt, p.productCategory AS productCategory, " +
+            "p.content AS content, p.name AS name, p.price AS price, p.createdAt AS createdAt, p.productCategory AS productCategory, " +
             "p.ageCategory AS ageCategory, p.genderCategory AS genderCategory, p.leftAmount AS leftAmount, " +
             "p.thumbnailUrl AS thumbnailUrl, p.imageUrls AS imageUrls, p.averageStarPoint AS averageStarPoint " +
             "FROM Product p " +
-            "JOIN FETCH p.seller s " +
+            "JOIN p.seller s " +
             "WHERE (:productCategory IS NULL OR p.productCategory = :productCategory) " +
             "AND (:ageCategory IS NULL OR p.ageCategory = :ageCategory) " +
             "AND (:genderCategory IS NULL OR p.genderCategory = :genderCategory) " +
@@ -133,11 +133,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT p.id AS productId, s.id AS sellerId, s.shopName AS shopName, " +
             "s.shopImageUrl AS shopImageUrl, " +
-            "p.name AS name, p.price AS price, p.createdAt AS createdAt, p.productCategory AS productCategory, " +
+            "p.content AS content, p.name AS name, p.price AS price, p.createdAt AS createdAt, p.productCategory AS productCategory, " +
             "p.ageCategory AS ageCategory, p.genderCategory AS genderCategory, p.leftAmount AS leftAmount, " +
             "p.thumbnailUrl AS thumbnailUrl, p.averageStarPoint AS averageStarPoint " +
             "FROM Product p " +
-            "JOIN FETCH p.seller s " +
+            "JOIN p.seller s " +
             "WHERE p.id IN :productIds")
     List<GetProductProjection> findProductsByProductIds(@Param("productIds") List<Long> productIds);
 
