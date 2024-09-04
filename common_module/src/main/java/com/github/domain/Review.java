@@ -1,14 +1,13 @@
 package com.github.domain;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import org.antlr.v4.runtime.misc.NotNull;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Entity
 @Table(name = "review")
@@ -22,7 +21,6 @@ public class Review {
 //    @JoinColumn(name = "users_id")
 //    private User users;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
@@ -41,7 +39,7 @@ public class Review {
     private Short starPoint;
 
     @Builder.Default
-    @Column(name = "is_deleted", columnDefinition = "tinyint default 0")
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "tinyint default 0")
     private Boolean isDeleted = false;
 
     @Setter

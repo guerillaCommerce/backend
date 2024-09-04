@@ -2,5 +2,4 @@ rootProject.name = 'commerce'
 include 'product_module'
 include 'user_module'
 include 'common_module'
-include 'user_module'
 

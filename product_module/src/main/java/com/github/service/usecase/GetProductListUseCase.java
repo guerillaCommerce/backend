@@ -1,124 +1,118 @@
 package com.github.service.usecase;
 
-import com.github.dto.type.AgeCategory;
-import com.github.dto.type.GenderCategory;
-import com.github.dto.type.ProductCategory;
-import com.github.dto.type.SortType;
-import com.github.repository.GetProductProjection;
-import com.github.repository.ProductRepository;
+import com.github.domain.type.AgeCategory;
+import com.github.domain.type.GenderCategory;
+import com.github.domain.type.ProductCategory;
+import com.github.domain.type.SortType;
+import com.github.repository.ProductRepositoryImpl;
+import com.github.repository.projection.GetProductProjectionImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
 @Component
 public class GetProductListUseCase {
-    private final ProductRepository productRepository;
+    private final ProductRepositoryImpl productRepository;
 
-    public GetProductListUseCase(final ProductRepository productRepository) {
+    public GetProductListUseCase(final ProductRepositoryImpl productRepository) {
         this.productRepository = productRepository;
     }
 
-    private List<GetProductProjection> getProductListBySearchToken(
+    private List<GetProductProjectionImpl> getProductListBySearchToken(
             final String searchToken,
             final Pageable pageable,
             final SortType sort,
-            final ProductCategory productCategory,
-            final AgeCategory ageCategory,
-            final GenderCategory genderCategory
+            final ProductCategory inputProductCategory,
+            final AgeCategory inputAgeCategory,
+            final GenderCategory inputGenderCategory
     ) {
-        String productCategoryName = productCategory == ProductCategory.ALL ? null : productCategory.name();
-        String ageCategoryName = ageCategory == AgeCategory.ALL ? null : ageCategory.name();
-        String genderCategoryName = genderCategory == GenderCategory.ALL ? null : genderCategory.name();
+        ProductCategory productCategory = inputProductCategory == ProductCategory.ALL ? null : inputProductCategory;
+        AgeCategory ageCategory = inputAgeCategory == AgeCategory.ALL ? null : inputAgeCategory;
+        GenderCategory genderCategory = inputGenderCategory == GenderCategory.ALL ? null : inputGenderCategory;
+
+        String sortBy;
         switch (sort) {
             case SortType.PRICE:
-                return productRepository.searchProductSortByPrice(
-                        searchToken,
-                        productCategoryName,
-                        ageCategoryName,
-                        genderCategoryName,
-                        pageable
-                );
+                sortBy = "price";
+                break;
             case SortType.LATEST:
-                return productRepository.searchProductSortByCreatedAt(
-                        searchToken,
-                        productCategoryName,
-                        ageCategoryName,
-                        genderCategoryName,
-                        pageable
-                );
+                sortBy = "createdAt";
+                break;
             default:
-                return productRepository.searchProductSortById(
-                        searchToken,
-                        productCategoryName,
-                        ageCategoryName,
-                        genderCategoryName,
-                        pageable
-                );
+                sortBy = "id";
+                break;
         }
+
+        return productRepository.getProductList(
+                searchToken,
+                productCategory,
+                ageCategory,
+                genderCategory,
+                sortBy,
+                pageable
+        );
     }
 
-    private List<GetProductProjection> getProductListByCategory(
+    private List<GetProductProjectionImpl> getProductListByCategory(
             final Pageable pageable,
             final SortType sort,
-            final ProductCategory productCategory,
-            final AgeCategory ageCategory,
-            final GenderCategory genderCategory
+            final ProductCategory inputProductCategory,
+            final AgeCategory inputAgeCategory,
+            final GenderCategory inputGenderCategory
     ) {
-        String productCategoryName = productCategory == ProductCategory.ALL ? null : productCategory.name();
-        String ageCategoryName = ageCategory == AgeCategory.ALL ? null : ageCategory.name();
-        String genderCategoryName = genderCategory == GenderCategory.ALL ? null : genderCategory.name();
+        ProductCategory productCategory = inputProductCategory == ProductCategory.ALL ? null : inputProductCategory;
+        AgeCategory ageCategory = inputAgeCategory == AgeCategory.ALL ? null : inputAgeCategory;
+        GenderCategory genderCategory = inputGenderCategory == GenderCategory.ALL ? null : inputGenderCategory;
+
+        String sortBy;
         switch (sort) {
             case SortType.PRICE:
-                return productRepository.findAllSortByPrice(
-                        productCategoryName,
-                        ageCategoryName,
-                        genderCategoryName,
-                        pageable
-                );
+                sortBy = "price";
+                break;
             case SortType.LATEST:
-                return productRepository.findAllSortByCreatedAt(
-                        productCategoryName,
-                        ageCategoryName,
-                        genderCategoryName,
-                        pageable
-                );
+                sortBy = "createdAt";
+                break;
             default:
-                return productRepository.findAllSortById(
-                        productCategoryName,
-                        ageCategoryName,
-                        genderCategoryName,
-                        pageable
-                );
+                sortBy = "id";
+                break;
         }
+
+        return productRepository.getProductList(
+                null,
+                productCategory,
+                ageCategory,
+                genderCategory,
+                sortBy,
+                pageable
+        );
     }
 
-    public List<GetProductProjection> exec(
+    public List<GetProductProjectionImpl> exec(
             final Pageable pageable,
             final SortType sort,
-            final ProductCategory productCategory,
-            final AgeCategory ageCategory,
-            final GenderCategory genderCategory,
+            final ProductCategory inputProductCategory,
+            final AgeCategory inputAgeCategory,
+            final GenderCategory inputGenderCategory,
             final String search
     ) {
-        if (StringUtils.hasText(search)) {
+        if (search != null && !search.trim().isEmpty()) {
             String searchToken = "%" + search + "%";
             return this.getProductListBySearchToken(
                     searchToken,
                     pageable,
                     sort,
-                    productCategory,
-                    ageCategory,
-                    genderCategory
+                    inputProductCategory,
+                    inputAgeCategory,
+                    inputGenderCategory
             );
         } else {
             return this.getProductListByCategory(
                     pageable,
                     sort,
-                    productCategory,
-                    ageCategory,
-                    genderCategory
+                    inputProductCategory,
+                    inputAgeCategory,
+                    inputGenderCategory
             );
         }
     }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.domain.Product;
-import com.github.repository.GetProductProjection;
+import com.github.repository.projection.GetProductProjectionImpl;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -17,28 +17,21 @@ import java.util.List;
 @Getter
 public class GetProductOutputDto {
     private long productId;
-
     private long sellerId;
-
-    private long enteredUserId;
-
-    private String enteredUserName;
-
     private String shopName;
-
+    private String shopImageUrl;
     private String name;
-
     private String content;
-
     private int price;
-
     private int leftAmount;
-
     private String productCategory;
-
     private String ageCategory;
-
     private String genderCategory;
+    private String thumbnailUrl;
+    private List<String> imageUrls;
+    private String options;
+    private Double averageStarPoint;
+    private boolean isSeller;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
@@ -46,21 +39,10 @@ public class GetProductOutputDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
 
-    private String thumbnailUrl;
+    private List<GetReviewOutputDto> reviews;
 
-    private List<String> imageUrls;
+    public static GetProductOutputDto from(GetProductProjectionImpl projection) {
 
-    private String options;
-
-    private Double averageStarPoint;
-
-    private boolean isSeller;
-
-//    private List<DetailPageOrderDto> orderList;
-
-    private String shopImageUrl;
-
-    public static GetProductOutputDto from(GetProductProjection projection) {
         return GetProductOutputDto.builder()
                 .productId(projection.getProductId())
                 .sellerId(projection.getSellerId())
@@ -69,9 +51,12 @@ public class GetProductOutputDto {
                 .content(projection.getContent())
                 .price(projection.getPrice())
                 .leftAmount(projection.getLeftAmount())
-                .productCategory(projection.getProductCategory())
-                .ageCategory(projection.getAgeCategory())
-                .genderCategory(projection.getGenderCategory())
+                .productCategory(projection.getProductCategory().name())
+                .ageCategory(projection.getAgeCategory().name())
+                .genderCategory(projection.getGenderCategory().name())
+//                .productCategory(projection.getProductCategory())
+//                .ageCategory(projection.getAgeCategory())
+//                .genderCategory(projection.getGenderCategory())
                 .createdAt(projection.getCreatedAt())
                 .updatedAt(projection.getUpdatedAt())
                 .thumbnailUrl(projection.getThumbnailUrl())
@@ -82,9 +67,9 @@ public class GetProductOutputDto {
                 .build();
     }
 
-    public static List<GetProductOutputDto> from(List<GetProductProjection> projections) {
+    public static List<GetProductOutputDto> from(List<GetProductProjectionImpl> projections) {
         List<GetProductOutputDto> dtoList = new ArrayList<>();
-        for (GetProductProjection projection : projections) {
+        for (GetProductProjectionImpl projection : projections) {
             dtoList.add(from(projection));
         }
         return dtoList;
@@ -109,19 +94,19 @@ public class GetProductOutputDto {
                 .options(product.getOptions())
                 .averageStarPoint(product.getAverageStarPoint())
                 .shopImageUrl(product.getSeller().getShopImageUrl())
+                .reviews(GetReviewOutputDto.from(product.getReviews()))
                 .build();
     }
 
     private static List<String> parseImageUrls(String imageUrlsJson) {
         ObjectMapper objectMapper = new ObjectMapper();
         if (imageUrlsJson == null) {
-            return new ArrayList<>(); // null인 경우 빈 리스트 반환
+            return new ArrayList<>();
         }
         try {
             return objectMapper.readValue(imageUrlsJson, new TypeReference<List<String>>() {
             });
         } catch (IOException e) {
-            // 에러 발생 시 빈 리스트 반환 (에러 로깅 등을 추가할 수 있음)
             return new ArrayList<>();
         }
     }

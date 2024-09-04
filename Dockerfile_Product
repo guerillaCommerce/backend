@@ -1,18 +1,18 @@
 # Stage 1: Build the application
-FROM eclipse-temurin:21 AS builder
+FROM eclipse-temurin:21-jdk AS builder
 WORKDIR /workspace
 
-# Copy the project files
+# Copy the project files to the container
 COPY . .
 
-# Change directory to the product_module and build it using the Gradle wrapper
-WORKDIR /workspace/product_module
+# Ensure the gradlew script is executable
+RUN chmod +x ./gradlew
 
-# Gradle build with caching
-RUN ../gradlew clean build -x test
+# Run the Gradle build with caching
+RUN ./gradlew :product_module:clean :product_module:build
 
 # Stage 2: Run the application
-FROM eclipse-temurin:21
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 # Copy the built jar from the previous stage

@@ -1,4 +1,4 @@
-package com.github.dto.type;
+package com.github.domain.type;
 
 public enum SortType {
     LATEST,

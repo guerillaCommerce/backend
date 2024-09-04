@@ -2,7 +2,7 @@ package com.github.service.usecase;
 
 import com.github.common.exception.GlobalException;
 import com.github.domain.Product;
-import com.github.repository.ProductRepository;
+import com.github.repository.ProductRepositoryImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -10,17 +10,15 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class GetProductDetailUseCase {
-    private final ProductRepository productRepository;
+    private final ProductRepositoryImpl productRepository;
 
-    public GetProductDetailUseCase(ProductRepository productRepository) {
+    public GetProductDetailUseCase(ProductRepositoryImpl productRepository) {
         this.productRepository = productRepository;
     }
 
-    public Product getProductDetail(Long productId) {
-        Product product = productRepository.findOneById(productId)
+    public Product getProductDetail(final long productId) {
+        return productRepository.getProductDetailWithReviewListByProductId(productId)
                 .orElseThrow(() -> new GlobalException(HttpStatus.NOT_FOUND, "Product not found for ID: " + productId));
-        log.info("2222222222222" + product.getContent());
-        return product;
     }
 
     public Product exec(long productId) {

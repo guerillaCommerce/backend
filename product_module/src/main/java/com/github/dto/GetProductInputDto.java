@@ -1,9 +1,9 @@
 package com.github.dto;
 
-import com.github.dto.type.AgeCategory;
-import com.github.dto.type.GenderCategory;
-import com.github.dto.type.ProductCategory;
-import com.github.dto.type.SortType;
+import com.github.domain.type.AgeCategory;
+import com.github.domain.type.GenderCategory;
+import com.github.domain.type.ProductCategory;
+import com.github.domain.type.SortType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class GetProductInputDto {
     private int size = 15;
-    private int page = 1;
+    private int page = 0;
     private ProductCategory productCategory = ProductCategory.ALL;
     private AgeCategory ageCategory = AgeCategory.ALL;
     private GenderCategory genderCategory = GenderCategory.ALL;

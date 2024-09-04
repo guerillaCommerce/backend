@@ -1,12 +1,12 @@
 package com.github.service;
 
 import com.github.domain.Product;
+import com.github.domain.type.AgeCategory;
+import com.github.domain.type.GenderCategory;
+import com.github.domain.type.ProductCategory;
+import com.github.domain.type.SortType;
 import com.github.dto.GetProductOutputDto;
-import com.github.dto.type.AgeCategory;
-import com.github.dto.type.GenderCategory;
-import com.github.dto.type.ProductCategory;
-import com.github.dto.type.SortType;
-import com.github.repository.GetProductProjection;
+import com.github.repository.projection.GetProductProjectionImpl;
 import com.github.service.usecase.GetProductDetailUseCase;
 import com.github.service.usecase.GetProductListUseCase;
 import org.springframework.data.domain.PageRequest;
@@ -35,9 +35,10 @@ public class ProductService {
             final String search
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        List<GetProductProjection> result = getProductListUseCase.exec(
+        List<GetProductProjectionImpl> result = getProductListUseCase.exec(
                 pageable, sort, productCategory, ageCategory, genderCategory, search
         );
+        System.out.println("444444444" + result.size());
         return GetProductOutputDto.from(result);
     }
 
