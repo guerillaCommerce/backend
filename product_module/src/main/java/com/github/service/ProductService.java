@@ -38,7 +38,6 @@ public class ProductService {
         List<GetProductProjectionImpl> result = getProductListUseCase.exec(
                 pageable, sort, productCategory, ageCategory, genderCategory, search
         );
-        System.out.println("444444444" + result.size());
         return GetProductOutputDto.from(result);
     }
 

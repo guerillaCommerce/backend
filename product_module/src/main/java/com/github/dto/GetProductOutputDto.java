@@ -32,14 +32,11 @@ public class GetProductOutputDto {
     private String options;
     private Double averageStarPoint;
     private boolean isSeller;
-
+    private List<GetReviewOutputDto> reviews;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
-
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
-
-    private List<GetReviewOutputDto> reviews;
 
     public static GetProductOutputDto from(GetProductProjectionImpl projection) {
 
@@ -54,9 +51,6 @@ public class GetProductOutputDto {
                 .productCategory(projection.getProductCategory().name())
                 .ageCategory(projection.getAgeCategory().name())
                 .genderCategory(projection.getGenderCategory().name())
-//                .productCategory(projection.getProductCategory())
-//                .ageCategory(projection.getAgeCategory())
-//                .genderCategory(projection.getGenderCategory())
                 .createdAt(projection.getCreatedAt())
                 .updatedAt(projection.getUpdatedAt())
                 .thumbnailUrl(projection.getThumbnailUrl())
