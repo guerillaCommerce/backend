@@ -9,18 +9,16 @@ pipeline {
 
         // EC2 관련 설정
         EC2_HOST = ''
-        SSH_CREDENTIALS = ''
 
         // AWS 파라미터 스토어
         ENV_FILE_NAME = ''
-
-        // 도커 관련
         DOCKER_FILE_NAME = ''
         DOCKER_USER = credentials('docker-user')
         DOCKER_PASSWORD = credentials('docker-password')
         MODULE_NAME = ''
         MODULE_PORT = ''
     }
+
     stages {
         stage('Set EC2 Host') {
             steps {
@@ -45,13 +43,19 @@ pipeline {
                         env.DOCKER_FILE_NAME = 'Dockerfile_Api'
                         env.MODULE_NAME = 'api_module'
                         env.MODULE_PORT = 8090
+                    } else {
+                        error "Branch ${env.BRANCH_NAME} is not configured to run this pipeline."
                     }
                 }
             }
         }
+
         stage('Retrieve AWS Parameters') {
             steps {
                 script {
+                    if (env.ENV_FILE_NAME == '') {
+                        error "ENV_FILE_NAME is not set. Exiting the pipeline."
+                    }
                     echo "Fetching parameters from AWS Parameter Store..."
                     // AWS Parameter Store에서 환경변수 가져오기
                     sh """
@@ -91,7 +95,7 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker Image using ${DOCKER_FILE_NAME}..."
-                    // Docker 이미지 빌드 (Dockerfile_Product 사용)
+                    // Docker 이미지 빌드
                     sh """
                     docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
                     docker build -t ${DOCKER_USER}/${MODULE_NAME} -f ${DOCKER_FILE_NAME} .
