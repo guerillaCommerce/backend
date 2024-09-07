@@ -25,19 +25,21 @@ pipeline {
         stage('Set EC2 Host') {
             steps {
                 script {
-                    if (env.GIT_BRANCH == 'main-product') {
+                    echo "Current branch is: ${env.BRANCH_NAME}"
+
+                    if (env.BRANCH_NAME == 'main-product') {
                         env.EC2_HOST = credentials('product-module-host')
                         env.ENV_FILE_NAME = '/product-env'
                         env.DOCKER_FILE_NAME = 'Dockerfile_Product'
                         env.MODULE_NAME = 'product_module'
                         env.MODULE_PORT = 8081
-                    } else if (env.GIT_BRANCH == 'main-user') {
+                    } else if (env.BRANCH_NAME == 'main-user') {
                         env.EC2_HOST = credentials('user-module-host')
                         env.ENV_FILE_NAME = '/user-env'
                         env.DOCKER_FILE_NAME = 'Dockerfile_User'
                         env.MODULE_NAME = 'user_module'
                         env.MODULE_PORT = 8082
-                    } else if (env.GIT_BRANCH == 'main-api') {
+                    } else if (env.BRANCH_NAME == 'main-api') {
                         env.EC2_HOST = credentials('api-module-host')
                         env.ENV_FILE_NAME = '/api-env'
                         env.DOCKER_FILE_NAME = 'Dockerfile_Api'
@@ -105,9 +107,9 @@ pipeline {
                     echo "Deploying Docker Image to AWS EC2..."
 
                     // EC2 인스턴스에 SSH로 접속하여 기존 컨테이너 중지 및 새 컨테이너 실행
-                    sshagent(credentials: [SSH_CREDENTIALS]) {
+                    sshagent(['ec2-ssh-key']) {
                         sh """
-                        ssh -o StrictHostKeyChecking=no ec2-user@${EC2_HOST} << EOF
+                        ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} << EOF
                         docker stop ${MODULE_NAME} || true
                         docker rm ${MODULE_NAME} || true
                         docker rmi ${DOCKER_USER}/${MODULE_NAME} || true
