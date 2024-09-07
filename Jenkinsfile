@@ -60,7 +60,7 @@ pipeline {
                     // AWS Parameter Store에서 환경변수 가져오기
                     sh """
                     aws ssm get-parameters \
-                        --names ${ENV_FILE_NAME} \
+                        --names ${env.ENV_FILE_NAME} \
                         --with-decryption \
                         --query "Parameters[*].[Name,Value]" \
                         --output text > aws_params.txt
@@ -84,8 +84,8 @@ pipeline {
 
                     // 생성된 application.properties를 product_module/src/resources/로 이동
                     sh """
-                    mkdir -p ${MODULE_NAME}/src/resources
-                    mv application.properties ${MODULE_NAME}/src/resources/
+                    mkdir -p ${env.MODULE_NAME}/src/resources
+                    mv application.properties ${env.MODULE_NAME}/src/resources/
                     """
                 }
             }
@@ -94,12 +94,12 @@ pipeline {
         stage('Build and Push Docker Image') {
             steps {
                 script {
-                    echo "Building Docker Image using ${DOCKER_FILE_NAME}..."
+                    echo "Building Docker Image using ${env.DOCKER_FILE_NAME}..."
                     // Docker 이미지 빌드
                     sh """
-                    docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
-                    docker build -t ${DOCKER_USER}/${MODULE_NAME} -f ${DOCKER_FILE_NAME} .
-                    docker push ${DOCKER_USER}/${MODULE_NAME}
+                    docker login -u ${env.DOCKER_USER} -p ${env.DOCKER_PASSWORD}
+                    docker build -t ${env.DOCKER_USER}/${env.MODULE_NAME} -f ${env.DOCKER_FILE_NAME} .
+                    docker push ${env.DOCKER_USER}/${env.MODULE_NAME}
                     """
                 }
             }
@@ -113,12 +113,12 @@ pipeline {
                     // EC2 인스턴스에 SSH로 접속하여 기존 컨테이너 중지 및 새 컨테이너 실행
                     sshagent(['ec2-ssh-key']) {
                         sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} << EOF
-                        docker stop ${MODULE_NAME} || true
-                        docker rm ${MODULE_NAME} || true
-                        docker rmi ${DOCKER_USER}/${MODULE_NAME} || true
-                        docker pull ${DOCKER_USER}/${MODULE_NAME}
-                        docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}
+                        ssh -o StrictHostKeyChecking=no ubuntu@${env.EC2_HOST} << EOF
+                        docker stop ${env.MODULE_NAME} || true
+                        docker rm ${env.MODULE_NAME} || true
+                        docker rmi ${env.DOCKER_USER}/${env.MODULE_NAME} || true
+                        docker pull ${env.DOCKER_USER}/${env.MODULE_NAME}
+                        docker run -d --name ${env.MODULE_NAME} -p ${env.MODULE_PORT}:${env.MODULE_PORT} ${env.DOCKER_USER}/${env.MODULE_NAME}
                         docker image prune -f
                         EOF
                         """
