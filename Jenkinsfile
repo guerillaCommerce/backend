@@ -25,10 +25,10 @@ pipeline {
         stage('Set EC2 Host') {
             steps {
                 script {
-                    echo "Current branch is: ${env.BRANCH_NAME}"
+                    echo "Current branch (raw value): '${env.BRANCH_NAME}'"
 
                     // 설정된 브랜치에 따라 변수를 설정
-                    if (env.BRANCH_NAME == 'main-product') {
+                    if (env.BRANCH_NAME.trim() == 'main-product') {
                         echo "Setting up for main-product branch"
                         env.EC2_HOST = credentials('product-module-host')
                         env.ENV_FILE_NAME = '/product-env'
