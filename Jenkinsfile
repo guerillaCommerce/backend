@@ -8,9 +8,9 @@ pipeline {
     agent any
 
     environment {
-        //도커 관련
-        DOCKER_USER = credentials('docker-user')
-        DOCKER_PASSWORD = credentials('docker-password')
+//         //도커 관련
+//         DOCKER_USER = credentials('docker-user')
+//         DOCKER_PASSWORD = credentials('docker-password')
     }
 
     stages {
@@ -90,11 +90,15 @@ pipeline {
             steps {
                 script {
                     echo "Deploying Docker Image to AWS EC2..."
-                    // SSH를 사용하여 EC2에 연결하고 도커 이미지 배포
                     withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sshagent(['ec2-ssh-key']) {
                             sh """
-                                ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "
+                                echo "EC2_HOST: ${EC2_HOST}"
+                                echo "DOCKER_USER: ${DOCKER_USER}"
+                                echo "MODULE_NAME: ${MODULE_NAME}"
+                                echo "DOCKER_PASSWORD: ${DOCKER_PASSWORD}" # 보안상 이 부분은 주의 필요
+                                ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} << 'EOF'
+                                    echo "Logging into Docker..."
                                     sudo docker stop ${MODULE_NAME} || true
                                     sudo docker rm ${MODULE_NAME} || true
                                     sudo docker rmi ${DOCKER_USER}/${MODULE_NAME} || true
@@ -102,7 +106,7 @@ pipeline {
                                     sudo docker pull ${DOCKER_USER}/${MODULE_NAME}
                                     sudo docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}
                                     sudo docker image prune -f
-                                "
+                                EOF
                             """
                         }
                     }
