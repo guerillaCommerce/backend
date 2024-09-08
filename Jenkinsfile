@@ -19,7 +19,6 @@ pipeline {
                 script {
                     echo "Current branch : ${env.BRANCH_NAME}"
 
-
                     // 설정된 브랜치에 따라 변수를 설정
                     if (env.BRANCH_NAME == 'main-product') {
                         echo "Setting up for main-product branch"
@@ -37,7 +36,7 @@ pipeline {
                         MODULE_PORT = '8082'
                     } else if (env.BRANCH_NAME == 'main-api') {
                         echo "Setting up for main-api branch"
-                        string(credentialsId: 'api-module-host')
+                        EC2_HOST = string(credentialsId: 'api-module-host')  // 수정된 부분
                         ENV_FILE_NAME = 'api-properties'
                         DOCKER_FILE_NAME = 'Dockerfile_Api'
                         MODULE_NAME = 'api_module'
@@ -76,12 +75,13 @@ pipeline {
             steps {
                 script {
                     echo "Building Docker Image using ${DOCKER_FILE_NAME}..."
-                    // Docker 로그인 보안 문제 해결
-                    sh """
-                    echo '${DOCKER_PASSWORD}' | docker login -u '${DOCKER_USER}' --password-stdin
-                    docker build -t '${DOCKER_USER}/${MODULE_NAME}' -f '${DOCKER_FILE_NAME}' .
-                    docker push '${DOCKER_USER}/${MODULE_NAME}'
-                    """
+                    withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh """
+                        echo '${DOCKER_PASSWORD}' | docker login -u '${DOCKER_USER}' --password-stdin
+                        docker build -t '${DOCKER_USER}/${MODULE_NAME}' -f '${DOCKER_FILE_NAME}' .
+                        docker push '${DOCKER_USER}/${MODULE_NAME}'
+                        """
+                    }
                 }
             }
         }
@@ -90,26 +90,21 @@ pipeline {
             steps {
                 script {
                     echo "Deploying Docker Image to AWS EC2..."
-//                     sshagent(['ec2-ssh-key']) {
-//                         sh """
-//                             ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "
-//                                 sudo docker stop ${MODULE_NAME} || true
-//                                 sudo docker rm ${MODULE_NAME} || true
-//                                 sudo docker rmi ${DOCKER_USER}/${MODULE_NAME} || true
-//                                 sudo docker pull ${DOCKER_USER}/${MODULE_NAME}
-//                                 sudo docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}
-//                                 sudo docker image prune -f
-//                             "
-//                         """
-//                     }
-                    sshagent(['ec2-ssh-key']) {
-                        sh """
-                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "sudo docker rm -f ${MODULE_NAME} || true"
-                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "sudo docker rmi ${DOCKER_USER}/${MODULE_NAME} || true"
-                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "sudo docker pull ${DOCKER_USER}/${MODULE_NAME}"
-                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "sudo docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}"
-                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "sudo docker image prune -f"
-                        """
+                    // SSH를 사용하여 EC2에 연결하고 도커 이미지 배포
+                    withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sshagent(['ec2-ssh-key']) {
+                            sh """
+                                ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "
+                                    sudo docker stop ${MODULE_NAME} || true
+                                    sudo docker rm ${MODULE_NAME} || true
+                                    sudo docker rmi ${DOCKER_USER}/${MODULE_NAME} || true
+                                    echo '${DOCKER_PASSWORD}' | docker login -u '${DOCKER_USER}' --password-stdin
+                                    sudo docker pull ${DOCKER_USER}/${MODULE_NAME}
+                                    sudo docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}
+                                    sudo docker image prune -f
+                                "
+                            """
+                        }
                     }
                 }
             }
