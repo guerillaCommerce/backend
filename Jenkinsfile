@@ -89,15 +89,18 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sshagent(['ec2-ssh-key']) {
                             sh """
-                                ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} << 'EOF'
-                                    sudo docker stop ${MODULE_NAME} || true
-                                    sudo docker rm ${MODULE_NAME} || true
-                                    sudo docker rmi ${DOCKER_USER}/${MODULE_NAME} || true
-                                    echo '${DOCKER_PASSWORD}' | docker login -u '${DOCKER_USER}' --password-stdin
-                                    sudo docker pull ${DOCKER_USER}/${MODULE_NAME}
-                                    sudo docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}
-                                    sudo docker image prune -f
-                                EOF
+                            echo '
+                            sudo docker stop ${MODULE_NAME} || true
+                            sudo docker rm ${MODULE_NAME} || true
+                            sudo docker rmi ${DOCKER_USER}/${MODULE_NAME} || true
+                            echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USER}" --password-stdin
+                            sudo docker pull ${DOCKER_USER}/${MODULE_NAME}
+                            sudo docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}
+                            sudo docker image prune -f
+                            ' > /tmp/deploy_script.sh
+
+                            scp /tmp/deploy_script.sh ubuntu@${EC2_HOST}:/tmp/
+                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} 'bash /tmp/deploy_script.sh'
                             """
                         }
                     }
