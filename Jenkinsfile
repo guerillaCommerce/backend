@@ -97,6 +97,11 @@ pipeline {
 //                                     sudo docker image prune -f
 //                                 EOF
 //                             """
+                            sh """
+                                echo "${EC2_HOST}" > /tmp/ec2_host_value.txt
+                                cat /tmp/ec2_host_value.txt
+                            """
+
                             // Stopping the Docker container
                             echo "Stopping Docker container..."
                             sh '''
