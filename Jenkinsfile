@@ -86,22 +86,44 @@ pipeline {
                     echo "Deploying Docker Image to AWS EC2..."
                     withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sshagent(['ec2-ssh-key']) {
-                            sh """
-                                echo "EC2_HOST: ${EC2_HOST}"
-                                echo "DOCKER_USER: ${DOCKER_USER}"
-                                echo "MODULE_NAME: ${MODULE_NAME}"
-                                echo "DOCKER_PASSWORD: ${DOCKER_PASSWORD}" # 보안상 이 부분은 주의 필요
-                                ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} << 'EOF'
-                                    echo "Logging into Docker..."
-                                    sudo docker stop ${MODULE_NAME} || true
-                                    sudo docker rm ${MODULE_NAME} || true
-                                    sudo docker rmi ${DOCKER_USER}/${MODULE_NAME} || true
-                                    echo '${DOCKER_PASSWORD}' | docker login -u '${DOCKER_USER}' --password-stdin
-                                    sudo docker pull ${DOCKER_USER}/${MODULE_NAME}
-                                    sudo docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}
-                                    sudo docker image prune -f
-                                EOF
-                            """
+//                             sh """
+//                                 ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} << 'EOF'
+//                                     sudo docker stop ${MODULE_NAME} || true
+//                                     sudo docker rm ${MODULE_NAME} || true
+//                                     sudo docker rmi ${DOCKER_USER}/${MODULE_NAME} || true
+//                                     echo '${DOCKER_PASSWORD}' | docker login -u '${DOCKER_USER}' --password-stdin
+//                                     sudo docker pull ${DOCKER_USER}/${MODULE_NAME}
+//                                     sudo docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}
+//                                     sudo docker image prune -f
+//                                 EOF
+//                             """
+                            // Stopping the Docker container
+                            echo "Stopping Docker container..."
+                            sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} sudo docker stop ${MODULE_NAME} || true"
+
+                            // Removing the Docker container
+                            echo "Removing Docker container..."
+                            sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} sudo docker rm ${MODULE_NAME} || true"
+
+                            // Removing the Docker image
+                            echo "Removing Docker image..."
+                            sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} sudo docker rmi ${DOCKER_USER}/${MODULE_NAME} || true"
+
+                            // Logging into Docker registry
+                            echo "Logging into Docker registry..."
+                            sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} echo '${DOCKER_PASSWORD}' | docker login -u '${DOCKER_USER}' --password-stdin"
+
+                            // Pulling the latest Docker image
+                            echo "Pulling latest Docker image..."
+                            sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} sudo docker pull ${DOCKER_USER}/${MODULE_NAME}"
+
+                            // Running the new Docker container
+                            echo "Running new Docker container..."
+                            sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} sudo docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}"
+
+                            // Pruning unused Docker images
+                            echo "Pruning unused Docker images..."
+                            sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} sudo docker image prune -f"
                         }
                     }
                 }
