@@ -26,9 +26,11 @@ pipeline {
             steps {
                 script {
                     echo "Current branch : ${env.BRANCH_NAME}"
+                    def branch = env.BRANCH_NAME.trim()
+                    echo "Comparing: '${branch}' == 'main-product'"
 
                     // 설정된 브랜치에 따라 변수를 설정
-                    if ("'${env.BRANCH_NAME}'" == 'main-product') {
+                    if (branch == 'main-product') {
                         echo "Setting up for main-product branch"
                         env.EC2_HOST = credentials('product-module-host')
                         env.ENV_FILE_NAME = '/product-env'
