@@ -23,21 +23,21 @@ pipeline {
                     // 설정된 브랜치에 따라 변수를 설정
                     if (env.BRANCH_NAME == 'main-product') {
                         echo "Setting up for main-product branch"
-                        EC2_HOST = credentials('product-module-host')
+                        EC2_HOST = string(credentialsId: 'product-module-host')
                         ENV_FILE_NAME = 'product-properties'
                         DOCKER_FILE_NAME = 'Dockerfile_Product'
                         MODULE_NAME = 'product_module'
                         MODULE_PORT = '8081'
                     } else if (env.BRANCH_NAME == 'main-user') {
                         echo "Setting up for main-user branch"
-                        EC2_HOST = credentials('user-module-host')
+                        EC2_HOST = string(credentialsId: 'user-module-host')
                         ENV_FILE_NAME = 'user-properties'
                         DOCKER_FILE_NAME = 'Dockerfile_User'
                         MODULE_NAME = 'user_module'
                         MODULE_PORT = '8082'
                     } else if (env.BRANCH_NAME == 'main-api') {
                         echo "Setting up for main-api branch"
-                        EC2_HOST = credentials('api-module-host')
+                        string(credentialsId: 'api-module-host')
                         ENV_FILE_NAME = 'api-properties'
                         DOCKER_FILE_NAME = 'Dockerfile_Api'
                         MODULE_NAME = 'api_module'
