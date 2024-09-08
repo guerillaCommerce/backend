@@ -65,6 +65,8 @@ pipeline {
                             sudo mkdir -p "${MODULE_NAME}/src/main/resources"
                             sudo chown -R jenkins:jenkins "${MODULE_NAME}/src/main/resources"
                             sudo cp "$APP_PROPS" "${MODULE_NAME}/src/main/resources/application.properties"
+                            ls -la "${MODULE_NAME}/src/main/resources/"
+                            cat "${MODULE_NAME}/src/main/resources/application.properties"
                         """
                     }
                 }
