@@ -67,11 +67,10 @@ pipeline {
                     withCredentials([file(credentialsId: "${ENV_FILE_NAME}", variable: 'APP_PROPS')]) {
                         echo "Using application.properties from Jenkins credentials."
 
-                        // 디렉토리 생성 및 권한 설정
                         sh """
-                        sudo mkdir -p "${MODULE_NAME}/src/main/resources"
-                        sudo chown -R jenkins:jenkins "${MODULE_NAME}/src/main/resources"
-                        cp "$APP_PROPS" "${MODULE_NAME}/src/main/resources/application.properties"
+                            sudo mkdir -p "${MODULE_NAME}/src/main/resources"
+                            sudo chown -R jenkins:jenkins "${MODULE_NAME}/src/main/resources"
+                            sudo cp "$APP_PROPS" "${MODULE_NAME}/src/main/resources/application.properties"
                         """
                     }
                 }
