@@ -65,7 +65,7 @@ pipeline {
             steps {
                 script {
                     // Jenkins 파일 크레덴셜을 임시 디렉토리로 가져옴
-                    withCredentials([file(credentialsId: ${ENV_FILE_NAME}, variable: 'APP_PROPS')]) {
+                    withCredentials([file(credentialsId: "${ENV_FILE_NAME}", variable: 'APP_PROPS')]) {
                         echo "Using application.properties from Jenkins credentials."
 
                         // 임시로 다운로드된 파일 경로를 사용할 수 있습니다.
