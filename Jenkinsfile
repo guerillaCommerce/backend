@@ -100,12 +100,12 @@ pipeline {
                     sshagent(['ec2-ssh-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} << 'EOF'
-                            docker stop '${MODULE_NAME}' || true
-                            docker rm '${MODULE_NAME}' || true
-                            docker rmi '${DOCKER_USER}/${MODULE_NAME}' || true
-                            docker pull '${DOCKER_USER}/${MODULE_NAME}'
-                            docker run -d --name '${MODULE_NAME}' -p ${MODULE_PORT}:${MODULE_PORT} '${DOCKER_USER}/${MODULE_NAME}'
-                            docker image prune -f
+                                docker stop '${MODULE_NAME}' || true
+                                docker rm '${MODULE_NAME}' || true
+                                docker rmi '${DOCKER_USER}/${MODULE_NAME}' || true
+                                docker pull '${DOCKER_USER}/${MODULE_NAME}'
+                                docker run -d --name '${MODULE_NAME}' -p ${MODULE_PORT}:${MODULE_PORT} '${DOCKER_USER}/${MODULE_NAME}'
+                                docker image prune -f
                             EOF
                         """
                     }
