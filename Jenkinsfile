@@ -7,12 +7,16 @@ pipeline {
         AWS_ACCESS_KEY = credentials('AWS_ACCESS_KEY')
         AWS_SECRET_KEY = credentials('AWS_SECRET_KEY')
 
-        // EC2 관련 설정 (기본값 설정)
+        // AWS EC2 및 파라미터 스토어 관련 설정 (기본값 설정)
         EC2_HOST = ''
         ENV_FILE_NAME = ''
+
+        //도커 관련
         DOCKER_FILE_NAME = ''
         DOCKER_USER = credentials('docker-user')
         DOCKER_PASSWORD = credentials('docker-password')
+
+        // 각 도메인 별 모듈
         MODULE_NAME = ''
         MODULE_PORT = ''
     }
@@ -25,18 +29,21 @@ pipeline {
 
                     // 설정된 브랜치에 따라 변수를 설정
                     if (env.BRANCH_NAME == 'main-product') {
+                        echo "Setting up for main-product branch"
                         env.EC2_HOST = credentials('product-module-host')
                         env.ENV_FILE_NAME = '/product-env'
                         env.DOCKER_FILE_NAME = 'Dockerfile_Product'
                         env.MODULE_NAME = 'product_module'
                         env.MODULE_PORT = '8081'
                     } else if (env.BRANCH_NAME == 'main-user') {
+                        echo "Setting up for main-user branch"
                         env.EC2_HOST = credentials('user-module-host')
                         env.ENV_FILE_NAME = '/user-env'
                         env.DOCKER_FILE_NAME = 'Dockerfile_User'
                         env.MODULE_NAME = 'user_module'
                         env.MODULE_PORT = '8082'
                     } else if (env.BRANCH_NAME == 'main-api') {
+                        echo "Setting up for main-api branch"
                         env.EC2_HOST = credentials('api-module-host')
                         env.ENV_FILE_NAME = '/api-env'
                         env.DOCKER_FILE_NAME = 'Dockerfile_Api'
@@ -47,7 +54,12 @@ pipeline {
                     }
 
                     // 로그로 변수 상태 확인
-                    echo "Set ENV_FILE_NAME to ${env.ENV_FILE_NAME}"
+                    // 로그로 변수 상태 확인
+                    echo "EC2_HOST: ${env.EC2_HOST}"
+                    echo "ENV_FILE_NAME: ${env.ENV_FILE_NAME}"
+                    echo "DOCKER_FILE_NAME: ${env.DOCKER_FILE_NAME}"
+                    echo "MODULE_NAME: ${env.MODULE_NAME}"
+                    echo "MODULE_PORT: ${env.MODULE_PORT}"
                 }
             }
         }
@@ -62,7 +74,7 @@ pipeline {
                     // AWS Parameter Store에서 환경변수 가져오기
                     sh """
                     aws ssm get-parameters \
-                        --names "${env.ENV_FILE_NAME}" \
+                        --name "${env.ENV_FILE_NAME}" \
                         --with-decryption \
                         --query "Parameters[*].[Name,Value]" \
                         --output text > aws_params.txt
