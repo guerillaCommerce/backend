@@ -90,16 +90,26 @@ pipeline {
             steps {
                 script {
                     echo "Deploying Docker Image to AWS EC2..."
+//                     sshagent(['ec2-ssh-key']) {
+//                         sh """
+//                             ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "
+//                                 sudo docker stop ${MODULE_NAME} || true
+//                                 sudo docker rm ${MODULE_NAME} || true
+//                                 sudo docker rmi ${DOCKER_USER}/${MODULE_NAME} || true
+//                                 sudo docker pull ${DOCKER_USER}/${MODULE_NAME}
+//                                 sudo docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}
+//                                 sudo docker image prune -f
+//                             "
+//                         """
+//                     }
                     sshagent(['ec2-ssh-key']) {
                         sh """
-                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "
-                                sudo docker stop ${MODULE_NAME} || true
-                                sudo docker rm ${MODULE_NAME} || true
-                                sudo docker rmi ${DOCKER_USER}/${MODULE_NAME} || true
-                                sudo docker pull ${DOCKER_USER}/${MODULE_NAME}
-                                sudo docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}
-                                sudo docker image prune -f
-                            "
+                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "sudo docker stop ${MODULE_NAME} || true"
+                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "sudo docker rm ${MODULE_NAME} || true"
+                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "sudo docker rmi ${DOCKER_USER}/${MODULE_NAME} || true"
+                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "sudo docker pull ${DOCKER_USER}/${MODULE_NAME}"
+                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "sudo docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}"
+                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "sudo docker image prune -f"
                         """
                     }
                 }
