@@ -16,11 +16,13 @@ pipeline {
                     // 설정된 브랜치에 따라 변수를 설정
                     if (env.BRANCH_NAME == 'main-product') {
                         echo "Setting up for main-product branch"
-                        withCredentials([string(credentialsId: 'product-module-host', variable: 'EC2_HOST')]) {
+                        withCredentials([string(credentialsId: 'product-module-host', variable: 'HOST')]) {
                             ENV_FILE_NAME = 'product-properties'
                             DOCKER_FILE_NAME = 'Dockerfile_Product'
                             MODULE_NAME = 'product_module'
                             MODULE_PORT = '8081'
+                            echo "EC2_HOST: ${HOST}"
+                            sh "echo 'EC2_HOST is ${HOST}' > /tmp/ec2_host_value.txt"
                         }
                     } else if (env.BRANCH_NAME == 'main-user') {
                         echo "Setting up for main-user branch"
@@ -46,6 +48,15 @@ pipeline {
                     echo "DOCKER_FILE_NAME: ${DOCKER_FILE_NAME}"
                     echo "MODULE_NAME: ${MODULE_NAME}"
                     echo "MODULE_PORT: ${MODULE_PORT}"
+                }
+            }
+        }
+
+        stage('Debug EC2 Host') {
+            steps {
+                script {
+                    // 해당 파일에 제대로 값이 기록되었는지 확인
+                    sh "cat /tmp/ec2_host_value.txt"
                 }
             }
         }
