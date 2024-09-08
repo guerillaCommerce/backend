@@ -25,18 +25,22 @@ pipeline {
                         }
                     } else if (env.BRANCH_NAME == 'main-user') {
                         echo "Setting up for main-user branch"
-                        EC2_HOST = string(credentialsId: 'user-module-host')
-                        ENV_FILE_NAME = 'user-properties'
-                        DOCKER_FILE_NAME = 'Dockerfile_User'
-                        MODULE_NAME = 'user_module'
-                        MODULE_PORT = '8082'
+                        withCredentials([string(credentialsId: 'user-module-host', variable: 'HOST')]) {
+                            ENV_FILE_NAME = 'user-properties'
+                            DOCKER_FILE_NAME = 'Dockerfile_User'
+                            MODULE_NAME = 'user_module'
+                            MODULE_PORT = '8082'
+                            EC2_HOST = HOST
+                        }
                     } else if (env.BRANCH_NAME == 'main-api') {
                         echo "Setting up for main-api branch"
-                        EC2_HOST = string(credentialsId: 'api-module-host')  // 수정된 부분
-                        ENV_FILE_NAME = 'api-properties'
-                        DOCKER_FILE_NAME = 'Dockerfile_Api'
-                        MODULE_NAME = 'api_module'
-                        MODULE_PORT = '8090'
+                        withCredentials([string(credentialsId: 'api-module-host', variable: 'HOST')]) {
+                            ENV_FILE_NAME = 'api-properties'
+                            DOCKER_FILE_NAME = 'Dockerfile_Api'
+                            MODULE_NAME = 'api_module'
+                            MODULE_PORT = '8090'
+                            EC2_HOST = HOST
+                        }
                     } else {
                         error "Branch ${env.BRANCH_NAME} is not configured to run this pipeline."
                     }
