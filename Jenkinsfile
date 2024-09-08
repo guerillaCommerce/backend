@@ -67,9 +67,11 @@ pipeline {
                     withCredentials([file(credentialsId: "${ENV_FILE_NAME}", variable: 'APP_PROPS')]) {
                         echo "Using application.properties from Jenkins credentials."
 
-                        // 보안 경고 해결
-                        sh '''cp "$APP_PROPS" "${MODULE_NAME}/src/main/resources/application.properties"'''
-                    }
+                        sh """
+                        mkdir -p "${MODULE_NAME}/src/main/resources"
+                        cp "$APP_PROPS" "${MODULE_NAME}/src/main/resources/application.properties"
+                        """
+
                 }
             }
         }
