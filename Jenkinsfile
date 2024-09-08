@@ -83,9 +83,9 @@ pipeline {
                     echo "Building Docker Image using ${DOCKER_FILE_NAME}..."
                     // Docker 로그인 보안 문제 해결
                     sh """
-                    echo "${env.DOCKER_PASSWORD}" | docker login -u "${env.DOCKER_USER}" --password-stdin
-                    docker build -t "${env.DOCKER_USER}/${MODULE_NAME}" -f "${DOCKER_FILE_NAME}" .
-                    docker push "${env.DOCKER_USER}/${MODULE_NAME}"
+                    echo '${DOCKER_PASSWORD}' | docker login -u '${DOCKER_USER}' --password-stdin
+                    docker build -t '${DOCKER_USER}/${MODULE_NAME}' -f '${DOCKER_FILE_NAME}' .
+                    docker push '${DOCKER_USER}/${MODULE_NAME}'
                     """
                 }
             }
@@ -99,14 +99,14 @@ pipeline {
                     // EC2 인스턴스에 SSH로 접속하여 기존 컨테이너 중지 및 새 컨테이너 실행
                     sshagent(['ec2-ssh-key']) {
                         sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} << EOF
-                        docker stop "${MODULE_NAME}" || true
-                        docker rm "${MODULE_NAME}" || true
-                        docker rmi "${env.DOCKER_USER}/${MODULE_NAME}" || true
-                        docker pull "${env.DOCKER_USER}/${MODULE_NAME}"
-                        docker run -d --name "${MODULE_NAME}" -p ${MODULE_PORT}:${MODULE_PORT} "${env.DOCKER_USER}/${MODULE_NAME}"
-                        docker image prune -f
-                        EOF
+                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} << 'EOF'
+                            docker stop '${MODULE_NAME}' || true
+                            docker rm '${MODULE_NAME}' || true
+                            docker rmi '${DOCKER_USER}/${MODULE_NAME}' || true
+                            docker pull '${DOCKER_USER}/${MODULE_NAME}'
+                            docker run -d --name '${MODULE_NAME}' -p ${MODULE_PORT}:${MODULE_PORT} '${DOCKER_USER}/${MODULE_NAME}'
+                            docker image prune -f
+                            EOF
                         """
                     }
                 }
