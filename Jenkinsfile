@@ -1,3 +1,9 @@
+def EC2_HOST = ''
+def ENV_FILE_NAME = ''
+def DOCKER_FILE_NAME = ''
+def MODULE_NAME = ''
+def MODULE_PORT = ''
+
 pipeline {
     agent any
 
@@ -11,12 +17,6 @@ pipeline {
         DOCKER_USER = credentials('docker-user')
         DOCKER_PASSWORD = credentials('docker-password')
     }
-
-    def EC2_HOST = ''
-    def ENV_FILE_NAME = ''
-    def DOCKER_FILE_NAME = ''
-    def MODULE_NAME = ''
-    def MODULE_PORT = ''
 
     stages {
         stage('Set EC2 Host') {
