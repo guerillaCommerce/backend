@@ -60,7 +60,7 @@ pipeline {
                 }
             }
         }
-    stages {
+
         stage('Retrieve Application Properties from Jenkins') {
             steps {
                 script {
