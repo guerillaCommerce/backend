@@ -8,11 +8,6 @@ pipeline {
     agent any
 
     environment {
-        // AWS 자격증명
-        AWS_DEFAULT_REGION = 'ap-northeast-2'
-        AWS_ACCESS_KEY = credentials('AWS_ACCESS_KEY')
-        AWS_SECRET_KEY = credentials('AWS_SECRET_KEY')
-
         //도커 관련
         DOCKER_USER = credentials('docker-user')
         DOCKER_PASSWORD = credentials('docker-password')
@@ -99,7 +94,7 @@ pipeline {
                     // EC2 인스턴스에 SSH로 접속하여 기존 컨테이너 중지 및 새 컨테이너 실행
                     sshagent(['ec2-ssh-key']) {
                         sh """
-                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} << EOF
+                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} << 'EOF'
                                 docker stop '${MODULE_NAME}' || true
                                 docker rm '${MODULE_NAME}' || true
                                 docker rmi '${DOCKER_USER}/${MODULE_NAME}' || true
@@ -117,8 +112,10 @@ pipeline {
     post {
         always {
             echo 'Cleaning up...'
-            // 필요하다면 임시 파일 정리
-            sh 'rm -f aws_params.txt application.properties'
+            // 각 모듈의 application.properties 파일 정리
+            sh """
+                sudo rm -f ${MODULE_NAME}/src/main/resources/application.properties
+            """
         }
         success {
             echo 'Deployment succeeded!'
