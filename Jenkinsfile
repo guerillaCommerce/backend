@@ -67,13 +67,13 @@ pipeline {
                     if (ENV_FILE_NAME == '') {
                         error "ENV_FILE_NAME is not set. Exiting the pipeline."
                     }
-                    echo "Fetching parameters from AWS Parameter Store using ${env.ENV_FILE_NAME}..."
+                    echo "Fetching parameters from AWS Parameter Store using ${ENV_FILE_NAME}..."
                     // AWS Parameter Store에서 환경변수 가져오기
                     sh """
-                    aws ssm get-parameters \
+                    aws ssm get-parameter \
                         --name "${ENV_FILE_NAME}" \
                         --with-decryption \
-                        --query "Parameters[*].[Name,Value]" \
+                        --query Parameter.Value \
                         --output text > aws_params.txt
                     """
                 }
