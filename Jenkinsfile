@@ -60,14 +60,6 @@ pipeline {
                 script {
                     withCredentials([file(credentialsId: "${ENV_FILE_NAME}", variable: 'APP_PROPS')]) {
                         echo "Using application.properties from Jenkins credentials."
-
-//                         sh """
-//                             sudo mkdir -p "${MODULE_NAME}/src/main/resources"
-//                             sudo chown -R jenkins:jenkins "${MODULE_NAME}/src/main/resources"
-//                             sudo cp "$APP_PROPS" "${MODULE_NAME}/src/main/resources/application.properties"
-//                             ls -la "${MODULE_NAME}/src/main/resources/"
-//                             cat "${MODULE_NAME}/src/main/resources/application.properties"
-//                         """
                         sh """
                             mkdir -p "${MODULE_NAME}/src/main/resources"
                             cp "$APP_PROPS" "${MODULE_NAME}/src/main/resources/application.properties"
