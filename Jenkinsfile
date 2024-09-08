@@ -99,10 +99,10 @@ pipeline {
 //                             """
                             // Stopping the Docker container
                             echo "Stopping Docker container..."
-                            sh """
-                            #!/bin/bash
-                            ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} "sudo docker stop ${MODULE_NAME} || true"
-                            """
+                            sh '''
+                            ssh -o StrictHostKeyChecking=no ubuntu@'"${EC2_HOST}"' "sudo docker stop '"${MODULE_NAME}"' || true"
+                            '''
+
 
                             // Removing the Docker container
                             echo "Removing Docker container..."
