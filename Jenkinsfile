@@ -7,12 +7,6 @@ def MODULE_PORT = ''
 pipeline {
     agent any
 
-    environment {
-//         //도커 관련
-//         DOCKER_USER = credentials('docker-user')
-//         DOCKER_PASSWORD = credentials('docker-password')
-    }
-
     stages {
         stage('Set EC2 Host') {
             steps {
