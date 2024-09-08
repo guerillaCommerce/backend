@@ -16,11 +16,12 @@ pipeline {
                     // 설정된 브랜치에 따라 변수를 설정
                     if (env.BRANCH_NAME == 'main-product') {
                         echo "Setting up for main-product branch"
-                        EC2_HOST = string(credentialsId: 'product-module-host')
-                        ENV_FILE_NAME = 'product-properties'
-                        DOCKER_FILE_NAME = 'Dockerfile_Product'
-                        MODULE_NAME = 'product_module'
-                        MODULE_PORT = '8081'
+                        withCredentials([string(credentialsId: 'product-module-host', variable: 'EC2_HOST')]) {
+                            ENV_FILE_NAME = 'product-properties'
+                            DOCKER_FILE_NAME = 'Dockerfile_Product'
+                            MODULE_NAME = 'product_module'
+                            MODULE_PORT = '8081'
+                        }
                     } else if (env.BRANCH_NAME == 'main-user') {
                         echo "Setting up for main-user branch"
                         EC2_HOST = string(credentialsId: 'user-module-host')
