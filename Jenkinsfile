@@ -71,7 +71,7 @@ pipeline {
                         mkdir -p "${MODULE_NAME}/src/main/resources"
                         cp "$APP_PROPS" "${MODULE_NAME}/src/main/resources/application.properties"
                         """
-
+                    }
                 }
             }
         }
