@@ -21,8 +21,7 @@ pipeline {
                             DOCKER_FILE_NAME = 'Dockerfile_Product'
                             MODULE_NAME = 'product_module'
                             MODULE_PORT = '8081'
-                            echo "EC2_HOST: ${HOST}"
-                            sh "echo 'EC2_HOST is ${HOST}' > /tmp/ec2_host_value.txt"
+                            EC2_HOST = HOST
                         }
                     } else if (env.BRANCH_NAME == 'main-user') {
                         echo "Setting up for main-user branch"
@@ -48,15 +47,6 @@ pipeline {
                     echo "DOCKER_FILE_NAME: ${DOCKER_FILE_NAME}"
                     echo "MODULE_NAME: ${MODULE_NAME}"
                     echo "MODULE_PORT: ${MODULE_PORT}"
-                }
-            }
-        }
-
-        stage('Debug EC2 Host') {
-            steps {
-                script {
-                    // 해당 파일에 제대로 값이 기록되었는지 확인
-                    sh "cat /tmp/ec2_host_value.txt"
                 }
             }
         }
@@ -98,52 +88,17 @@ pipeline {
                     echo "Deploying Docker Image to AWS EC2..."
                     withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sshagent(['ec2-ssh-key']) {
-//                             sh """
-//                                 ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} << 'EOF'
-//                                     sudo docker stop ${MODULE_NAME} || true
-//                                     sudo docker rm ${MODULE_NAME} || true
-//                                     sudo docker rmi ${DOCKER_USER}/${MODULE_NAME} || true
-//                                     echo '${DOCKER_PASSWORD}' | docker login -u '${DOCKER_USER}' --password-stdin
-//                                     sudo docker pull ${DOCKER_USER}/${MODULE_NAME}
-//                                     sudo docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}
-//                                     sudo docker image prune -f
-//                                 EOF
-//                             """
                             sh """
-                                echo "${EC2_HOST}" > /tmp/ec2_host_value.txt
-                                cat /tmp/ec2_host_value.txt
+                                ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} << 'EOF'
+                                    sudo docker stop ${MODULE_NAME} || true
+                                    sudo docker rm ${MODULE_NAME} || true
+                                    sudo docker rmi ${DOCKER_USER}/${MODULE_NAME} || true
+                                    echo '${DOCKER_PASSWORD}' | docker login -u '${DOCKER_USER}' --password-stdin
+                                    sudo docker pull ${DOCKER_USER}/${MODULE_NAME}
+                                    sudo docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}
+                                    sudo docker image prune -f
+                                EOF
                             """
-
-                            // Stopping the Docker container
-                            echo "Stopping Docker container..."
-                            sh '''
-                            ssh -o StrictHostKeyChecking=no ubuntu@'"${EC2_HOST}"' "sudo docker stop '"${MODULE_NAME}"' || true"
-                            '''
-
-
-                            // Removing the Docker container
-                            echo "Removing Docker container..."
-                            sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} sudo docker rm ${MODULE_NAME} || true"
-
-                            // Removing the Docker image
-                            echo "Removing Docker image..."
-                            sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} sudo docker rmi ${DOCKER_USER}/${MODULE_NAME} || true"
-
-                            // Logging into Docker registry
-                            echo "Logging into Docker registry..."
-                            sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} echo '${DOCKER_PASSWORD}' | docker login -u '${DOCKER_USER}' --password-stdin"
-
-                            // Pulling the latest Docker image
-                            echo "Pulling latest Docker image..."
-                            sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} sudo docker pull ${DOCKER_USER}/${MODULE_NAME}"
-
-                            // Running the new Docker container
-                            echo "Running new Docker container..."
-                            sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} sudo docker run -d --name ${MODULE_NAME} -p ${MODULE_PORT}:${MODULE_PORT} ${DOCKER_USER}/${MODULE_NAME}"
-
-                            // Pruning unused Docker images
-                            echo "Pruning unused Docker images..."
-                            sh "ssh -o StrictHostKeyChecking=no ubuntu@${EC2_HOST} sudo docker image prune -f"
                         }
                     }
                 }
